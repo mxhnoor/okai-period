@@ -197,8 +197,8 @@ overlays = load_overlay_data(default_lat, default_lon)
 # Header Element
 st.markdown("""
 <div class="main-header">
-    <h1>OKAI period</h1>
-    <p><strong>Optimizing</strong> for <strong>K</strong>nowledge using <strong>A</strong>rtificial <strong>I</strongntelligence</p>
+    <h1>OKAI Period</h1>
+    <p><strong>Optimizing</strong> for <strong>K</strong>nowledge using <strong>A</strong>rtificial <strong>I</strong>ntelligence</p>
 </div>
 """, unsafe_allow_html=True)
 
