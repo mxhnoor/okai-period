@@ -259,7 +259,6 @@ st.markdown("""
 m = folium.Map(
     location=[map_data['centroid_lat'].mean(), map_data['centroid_lon'].mean()],
     zoom_start=13,
-    tiles="CartoDB positron"
 )
 
 # Plot Base Risk Grid Markers
