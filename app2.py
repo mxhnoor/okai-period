@@ -5,7 +5,7 @@ import folium
 from streamlit_folium import st_folium
 
 st.set_page_config(
-    page_title="OKAI period",
+    page_title="OKAI Period",
     page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -58,6 +58,18 @@ st.markdown("""
     .legend-dot  { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
 
     footer { visibility: hidden; }
+
+    /* Dark mode settings
+    @media (prefers-color-scheme: dark) {
+        .stApp { background-colour: #1a1616; }
+        .metric-card, .action-card {
+            background: #2b2424;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            }
+        .metric-label { color: #9ca3af; }
+        .metric-value { color: #f3f4f6; }
+        .legend-item { color: #d1d5db; }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -186,7 +198,7 @@ overlays = load_overlay_data(default_lat, default_lon)
 st.markdown("""
 <div class="main-header">
     <h1>OKAI period</h1>
-    <p>Optimizing for Knowledge using Artificial Intelligence</p>
+    <p><strong>Optimizing</strong> for <strong>K</strong>nowledge using <strong>A</strong>rtificial <strong>I</strongntelligence</p>
 </div>
 """, unsafe_allow_html=True)
 
