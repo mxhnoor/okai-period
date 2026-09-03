@@ -169,9 +169,9 @@ with st.sidebar:
     st.markdown(
         "<div style='font-size:0.75rem;color:#6b7280;line-height:1.65'>"
         "<strong>About</strong><br>"
-        "This tool utilises AI to identify potential period product desert zones in Toronto by analyzing amenity displacement and accessibility factors." 
-        "Period product desert zones are areas where access to menstrual products "
-        "is limited due to poverty, geography, or the absence of nearby distribution points."
+        "This tool utilizes AI to identify potential period product desert zones in Toronto by analyzing amenity displacement and accessibility factors."<br>
+        "Period product desert zones are areas where access to menstrual products is limited due to poverty, geography, or the absence of nearby distribution points."<br>
+        "<strong>Created by WOG <3</strong>"
         "</div>",
         unsafe_allow_html=True
     )
