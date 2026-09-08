@@ -39,7 +39,7 @@ The project combines data processing, machine learning outputs, and interactive 
   Matplotlib
 
 
-## Check out our Dashboard
+## Dashboard
 
 Run the [Streamlit app!](https://okai-period.streamlit.app/)
 
