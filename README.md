@@ -39,26 +39,9 @@ The project combines data processing, machine learning outputs, and interactive 
   Matplotlib
 
 
-## Installation
+## Check out our Dashboard
 
-Clone the repository:
-
-```bash
-git clone https://github.com/DinaLojpur/OKAI-period.git
-cd OKAI-period
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run the Streamlit app:
-
-```bash
-streamlit run app2.py
-```
+Run the [Streamlit app!](https://okai-period.streamlit.app/)
 
 ## Acknowledgements
 
