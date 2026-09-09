@@ -288,7 +288,6 @@ with c4:
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
 # Map & Legend Section Layout
-
 def get_cluster_color(label):
     lbl = str(label).lower()
     if 'desert zone' in lbl:
@@ -302,17 +301,30 @@ def get_cluster_color(label):
     return "#9ca3af"           # Muted Gray Fallback
 
 
-def get_pressure_color(label):
-    lbl = str(label).lower()
-    if lbl == 'high':
-        return "#7f1d1d"       # Dark red
-    elif lbl == 'medium':
-        return "#d97706"       # Amber
-    elif lbl == 'low':
-        return "#2563eb"       # Blue
-    return "#6b7280"           # Muted gray fallback
-
-
+def make_triangle_icon(color="#78350f", size=16):
+    """Solid filled triangle marker (used for shelters)."""
+    html = f"""
+    <div style="width:{size}px; height:{size}px;">
+        <svg width="{size}" height="{size}" viewBox="0 0 24 24">
+            <polygon points="12,2 22,22 2,22" fill="{color}" stroke="#3f2409" stroke-width="1.5"/>
+        </svg>
+    </div>
+    """
+    return folium.DivIcon(html=html, icon_size=(size, size), icon_anchor=(size // 2, size // 2))
+ 
+ 
+def make_hollow_square_icon(color="#ec4899", size=14):
+    """Hollow (outline-only) square marker (used for encampment growth cells)."""
+    html = f"""
+    <div style="width:{size}px; height:{size}px;">
+        <svg width="{size}" height="{size}" viewBox="0 0 24 24">
+            <rect x="2" y="2" width="20" height="20" fill="none" stroke="{color}" stroke-width="2.5"/>
+        </svg>
+    </div>
+    """
+    return folium.DivIcon(html=html, icon_size=(size, size), icon_anchor=(size // 2, size // 2))
+ 
+ 
 # Full-Width Legend Banner Wrapper Element
 st.markdown("""
 <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: white; padding: 0.8rem 1.25rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 0.75rem; font-size: 0.82rem; align-items: center;">
@@ -321,15 +333,23 @@ st.markdown("""
     <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="width: 12px; height: 12px; background: #f97316; border-radius: 50%; display: inline-block;"></span><span style="font-weight: 600; color: #374151;">Low Service</span></div>
     <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="width: 12px; height: 12px; background: #eab308; border-radius: 50%; display: inline-block;"></span><span style="font-weight: 600; color: #374151;">Moderate Service</span></div>
     <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%; display: inline-block;"></span><span style="font-weight: 600; color: #374151;">Well Served</span></div>
+    <div style="display: flex; align-items: center; gap: 0.4rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24"><polygon points="12,2 22,22 2,22" fill="#78350f" stroke="#3f2409" stroke-width="1.5"/></svg>
+        <span style="font-weight: 600; color: #374151;">Shelters</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.4rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="none" stroke="#ec4899" stroke-width="2.5"/></svg>
+        <span style="font-weight: 600; color: #374151;">Encampment Growth</span>
+    </div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 #with map_col:
 m = folium.Map(
     location=[map_data['centroid_lat'].mean(), map_data['centroid_lon'].mean()],
     zoom_start=13,
 )
-
+ 
 # Plot Base Risk Grid Markers
 for _, row in map_data.iterrows():
     clr = get_cluster_color(row['cluster_label'])
@@ -346,7 +366,7 @@ for _, row in map_data.iterrows():
         </table>
     </div>
     """
-
+ 
     
     folium.CircleMarker(
         location=[row['centroid_lat'], row['centroid_lon']],
@@ -361,7 +381,7 @@ for _, row in map_data.iterrows():
         # )
     ).add_to(m)
     
-
+ 
 # # Contextual overlays using the centralized load_overlay_data dictionary
 if show_washrooms and not overlays['washrooms'].empty:
     for _, row in overlays['washrooms'].iterrows():
@@ -370,7 +390,7 @@ if show_washrooms and not overlays['washrooms'].empty:
             tooltip=f"🚻 {row['location']}",
             icon=folium.Icon(color="red", icon="toilet", prefix='fa')
         ).add_to(m)
-
+ 
 if show_comm_recs_parks and not overlays['comm_recs_parks'].empty:
     for _, row in overlays['comm_recs_parks'].iterrows():
         folium.Marker(
@@ -378,7 +398,7 @@ if show_comm_recs_parks and not overlays['comm_recs_parks'].empty:
             tooltip=f"🏛️ {row['Name']}",
             icon=folium.Icon(color="blue", icon="building", prefix='fa')
         ).add_to(m)
-
+ 
 if show_libraries and not overlays['libraries'].empty:
     for _, row in overlays['libraries'].iterrows():
         folium.Marker(
@@ -386,7 +406,7 @@ if show_libraries and not overlays['libraries'].empty:
             tooltip=f"📚 {row['BranchName']}",
             icon=folium.Icon(color="green", icon="book", prefix='fa')
         ).add_to(m)
-
+ 
 if show_transit and not overlays['transit'].empty:
     for _, row in overlays['transit'].iterrows():
         folium.Marker(
@@ -394,12 +414,10 @@ if show_transit and not overlays['transit'].empty:
             tooltip=f"🚇 {row['stop_name']}",
             icon=folium.Icon(color="orange", icon="subway", prefix='fa')
         ).add_to(m)
-
-# Shelters Layer (bed-based + room-based, colored by predicted occupancy pressure)
+ 
+# Shelters Layer (bed-based + room-based) — solid brown triangle markers
 if show_shelters and not shelter_df.empty:
     for _, row in shelter_df.iterrows():
-        clr = get_pressure_color(row.get('pressure_risk'))
-
         popup_html = f"""
         <div style="font-family: 'Arial', sans-serif; font-size: 12px; color: #333; min-width: 200px;">
             <h4 style="margin: 0 0 8px 0; color: #ef4444; border-bottom: 1px solid #ddd; padding-bottom: 4px;">
@@ -412,18 +430,14 @@ if show_shelters and not shelter_df.empty:
             </table>
         </div>
         """
-
-        folium.CircleMarker(
+ 
+        folium.Marker(
             location=[row['LATITUDE'], row['LONGITUDE']],
-            radius=7,
-            color=clr,
-            fill=True,
-            fill_color=clr,
-            fill_opacity=0.75,
+            icon=make_triangle_icon(),
             popup=folium.Popup(popup_html, max_width=300)
         ).add_to(m)
-
-# Encampment Growth Layer (colored using the model's precomputed color_code)
+ 
+# Encampment Growth Layer — hollow pink square markers
 if show_encampments and not encampment_df.empty:
     for _, row in encampment_df.iterrows():
         popup_html = f"""
@@ -436,15 +450,11 @@ if show_encampments and not encampment_df.empty:
             </table>
         </div>
         """
-
-        folium.CircleMarker(
+ 
+        folium.Marker(
             location=[row['lat'], row['lon']],
-            radius=5,
-            color=row['color_code'],
-            fill=True,
-            fill_color=row['color_code'],
-            fill_opacity=0.6,
+            icon=make_hollow_square_icon(),
             popup=folium.Popup(popup_html, max_width=280)
         ).add_to(m)
-
+ 
 st_folium(m, use_container_width=True, height=520, returned_objects=[])
